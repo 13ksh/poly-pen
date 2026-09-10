@@ -1,0 +1,17 @@
+# Poly Pen is a fork of Nanum Pen Script.
+# Built with Python (build_font.py), not fontmake from UFO/Glyphs masters.
+
+familyName: Poly Pen
+buildVariable: false
+recipe:
+  tool: python
+  script: ../build_font.py
+outputDir: ../fonts/ttf
+sources:
+  - ../fonts/nanum/NanumPenScript-Regular.ttf
+weights:
+  - { value: 400, style: Regular }
+notes: >
+  Fork / Modified Version of Nanum Pen Script (OFL 1.1).
+  Family name is Poly Pen. Does not use the reserved names Nanum or NanumPen.
+  Coverage matches the source font.

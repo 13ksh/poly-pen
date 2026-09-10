@@ -1,0 +1,7 @@
+# This is the list of people who have contributed to Poly Pen,
+# for documentation purposes.
+# Names should be added to this file as:
+# Name <email address>
+
+Sandoll Communications Inc.
+The Nanum Pen Script original designers

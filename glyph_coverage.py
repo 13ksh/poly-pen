@@ -1,0 +1,30 @@
+"""Korean + English + punctuation coverage for the Nanum Pen low-poly fork."""
+
+from __future__ import annotations
+
+_RANGES: tuple[tuple[int, int], ...] = (
+    (0x0020, 0x007E),
+    (0x00A0, 0x017F),
+    (0x02B0, 0x02FF),
+    (0x0300, 0x036F),
+    (0x1100, 0x11FF),
+    (0x2000, 0x206F),
+    (0x2070, 0x209F),
+    (0x20A0, 0x20CF),
+    (0x2100, 0x23FF),
+    (0x2460, 0x27BF),
+    (0x2B00, 0x2BFF),
+    (0x3000, 0x303F),
+    (0x3130, 0x318F),
+    (0xA960, 0xA97F),
+    (0xAC00, 0xD7A3),
+    (0xD7B0, 0xD7FF),
+    (0xFF00, 0xFFEF),
+)
+
+
+def keep_code(code: int) -> bool:
+    for start, end in _RANGES:
+        if start <= code <= end:
+            return True
+    return False

@@ -1,0 +1,59 @@
+FONTLOG
+Poly Pen
+======================================================================
+
+This file provides detailed information on the Poly Pen Font Software.
+This information should be distributed along with the Poly Pen fonts
+and any derivative works.
+
+
+Basic Font Information
+----------------------------------------------------------------------
+
+Poly Pen is a fork of Nanum Pen Script (SIL Open Font License 1.1
+Modified Version). It is not an original typeface family. Outlines
+start from Nanum Pen Script, then each glyph is faceted into triangles.
+Touching faces are merged into one outline so connected strokes stay
+one part.
+
+The family name is "Poly Pen". It does not use the reserved names
+Nanum or NanumPen.
+
+Style: Regular 400 only.
+
+Coverage matches Nanum Pen Script, including the full Hangul syllable
+block and the rest of the source cmap.
+
+
+Upstream
+----------------------------------------------------------------------
+
+Original Version: Nanum Pen Script
+https://fonts.google.com/specimen/Nanum+Pen+Script
+Designed by Sandoll Communications Inc. for NHN Corporation.
+
+Modified Version: Poly Pen
+https://github.com/13ksh/poly-pen
+
+
+ChangeLog
+----------------------------------------------------------------------
+
+10 September 2026 (The Poly Pen Project Authors)
+- Initial release of Poly Pen as a fork / Modified Version of
+  Nanum Pen Script
+- Static TTF Regular
+- Build pipeline in sources/
+- Google Fonts onboarding files (AUTHORS, CONTRIBUTORS, OFL, FONTLOG,
+  documentation/)
+
+
+Acknowledgements
+----------------------------------------------------------------------
+
+Nanum Pen Script was designed by Sandoll Communications Inc. for NHN
+Corporation (Naver Nanum fonts). Poly Pen keeps those outlines as the
+starting shapes, then replaces the filled strokes with merged low-poly
+facets.
+
+If you make modifications, add a changelog entry here.

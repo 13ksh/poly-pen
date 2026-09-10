@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Poly Pen</title>
+    <style>
+      @font-face {
+        font-family: "Poly Pen";
+        src: url("/fonts/PolyPen-Regular.ttf") format("truetype");
+        font-weight: 400;
+        font-display: swap;
+      }
+      :root {
+        --paper: #f4eee4;
+        --ink: #161412;
+        --mute: #6d675c;
+        --line: #ddd6c8;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+      }
+      main {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 36px 24px 72px;
+      }
+      .kicker {
+        margin: 0 0 8px;
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--mute);
+        font-weight: 700;
+      }
+      h1 {
+        margin: 0;
+        font-family: "Poly Pen", sans-serif;
+        font-size: clamp(56px, 12vw, 108px);
+        font-weight: 400;
+        line-height: 1;
+      }
+      .lede {
+        max-width: 38rem;
+        margin: 16px 0 0;
+        color: var(--mute);
+        line-height: 1.55;
+        font-size: 15px;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 28px 0 8px;
+      }
+      .download, .ghost {
+        display: inline-block;
+        padding: 12px 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 15px;
+      }
+      .download {
+        background: var(--ink);
+        color: var(--paper);
+      }
+      .ghost {
+        border: 1px solid var(--line);
+        color: var(--ink);
+      }
+      .meta {
+        color: var(--mute);
+        font-size: 13px;
+        line-height: 1.6;
+      }
+      label {
+        display: block;
+        margin: 36px 0 8px;
+        font-size: 12px;
+        color: var(--mute);
+      }
+      textarea {
+        width: 100%;
+        min-height: 140px;
+        padding: 16px 18px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fffdf8;
+        color: var(--ink);
+        font-family: "Poly Pen", sans-serif;
+        font-size: clamp(36px, 7vw, 64px);
+        line-height: 1.25;
+        resize: vertical;
+      }
+      footer {
+        margin-top: 40px;
+        color: var(--mute);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="kicker">Nanum Pen Script fork</p>
+      <h1>Poly Pen</h1>
+      <p class="lede">
+        Poly Pen is a fork of Nanum Pen Script. 원본 손글씨 아웃라인을
+        삼각형으로 접은 뒤, 붙어 있는 면은 한 획으로 합쳤습니다.
+        원본에 있는 문자는 전부 들어 있습니다.
+      </p>
+      <div class="actions">
+        <a class="download" href="/download/PolyPen-Regular.ttf" download="PolyPen-Regular.ttf">TTF 다운로드</a>
+        <a class="ghost" href="/download/OFL.txt" download="OFL.txt">OFL 라이선스</a>
+        <a class="ghost" href="https://github.com/13ksh/poly-pen">GitHub</a>
+      </div>
+      <p class="meta" id="meta">파일 확인 중…</p>
+      <label for="sample">미리보기</label>
+      <textarea id="sample" spellcheck="false">한글 가나다라
+Poly Pen 1234
+㈜ ㉠ !?@#</textarea>
+      <footer>
+        SIL OFL 1.1. Nanum Pen Script 포크.
+        원본 저작권 NHN / Sandoll. 예약 이름 Nanum, NanumPen은 쓰지 않습니다.
+      </footer>
+    </main>
+    <script>
+      fetch("/meta")
+        .then((r) => r.json())
+        .then((data) => {
+          const mb = (data.bytes / 1024 / 1024).toFixed(1);
+          document.getElementById("meta").textContent =
+            `${data.filename} · ${mb}MB · Regular · ${data.glyphs.toLocaleString()}자`;
+        })
+        .catch(() => {
+          document.getElementById("meta").textContent = "PolyPen-Regular.ttf";
+        });
+    </script>
+  </body>
+</html>

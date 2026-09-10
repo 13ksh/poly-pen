@@ -1,0 +1,8 @@
+# This is the list of copyright holders of Poly Pen for copyright purposes.
+# Contributors who are not copyright authors belong in CONTRIBUTORS.txt.
+#
+# Names should be added to this file as:
+# Name or Organization <email address>
+
+The Poly Pen Project Authors
+NHN Corporation
