@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nanum Pen Script · Poly Pen</title>
+    <style>
+      @font-face {
+        font-family: "Nanum Pen Script";
+        src: url("/fonts/NanumPenScript-Regular.ttf") format("truetype");
+        font-weight: 400;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Poly Pen";
+        src: url("/fonts/PolyPen-Regular.ttf") format("truetype");
+        font-weight: 400;
+        font-display: swap;
+      }
+      :root {
+        --paper: #dceaf8;
+        --pane: #f4f8fd;
+        --ink: #161412;
+        --mute: #4d5a68;
+        --line: #c5d4e4;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+      }
+      main {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 28px 20px 72px;
+      }
+      .kicker {
+        margin: 0 0 8px;
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--mute);
+        font-weight: 700;
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(28px, 5vw, 42px);
+        font-weight: 700;
+        line-height: 1.2;
+      }
+      .lede {
+        max-width: 40rem;
+        margin: 12px 0 0;
+        color: var(--mute);
+        line-height: 1.55;
+        font-size: 15px;
+      }
+      .controls {
+        display: grid;
+        gap: 12px;
+        margin: 24px 0 20px;
+      }
+      label {
+        display: block;
+        font-size: 12px;
+        color: var(--mute);
+        margin-bottom: 6px;
+      }
+      textarea {
+        width: 100%;
+        min-height: 88px;
+        padding: 12px 14px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+        color: var(--ink);
+        font-family: inherit;
+        font-size: 16px;
+        line-height: 1.45;
+        resize: vertical;
+      }
+      .size-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      input[type="range"] {
+        flex: 1;
+        accent-color: var(--ink);
+      }
+      .size-val {
+        min-width: 3.5rem;
+        color: var(--mute);
+        font-size: 13px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      .pane {
+        min-height: 280px;
+        padding: 18px 18px 22px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--pane);
+      }
+      .pane h2 {
+        margin: 0 0 14px;
+        font-size: 12px;
+        letter-spacing: 0.04em;
+        color: var(--mute);
+        font-weight: 700;
+        font-family: "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+      }
+      .pane .sample {
+        margin: 0;
+        color: var(--ink);
+        font-weight: 400;
+        line-height: 1.35;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .pane.empty .sample {
+        color: #8a97a6;
+      }
+      .nanum .sample { font-family: "Nanum Pen Script", cursive; }
+      .poly .sample { font-family: "Poly Pen", cursive; }
+      .nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 22px;
+      }
+      .nav a {
+        color: var(--ink);
+        font-size: 14px;
+      }
+      footer {
+        margin-top: 28px;
+        color: var(--mute);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      @media (max-width: 760px) {
+        .grid { grid-template-columns: 1fr; }
+        .pane { min-height: 200px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="kicker">Compare</p>
+      <h1>Nanum Pen Script / Poly Pen</h1>
+      <p class="lede">
+        왼쪽이 원본 Nanum Pen Script, 오른쪽이 포크 Poly Pen입니다.
+        같은 글자를 두 서체로 같이 봅니다.
+      </p>
+      <div class="controls">
+        <div>
+          <label for="source">글자</label>
+          <textarea id="source" spellcheck="false">동해물과 백두산이
+가나다라 Poly Pen
+한글 손글씨 1234</textarea>
+        </div>
+        <div>
+          <label for="size">크기</label>
+          <div class="size-row">
+            <input id="size" type="range" min="28" max="120" value="64" />
+            <span class="size-val" id="sizeLabel">64px</span>
+          </div>
+        </div>
+      </div>
+      <div class="grid">
+        <section class="pane nanum" id="nanumPane">
+          <h2>Nanum Pen Script · 원본</h2>
+          <p class="sample" id="nanumSample"></p>
+        </section>
+        <section class="pane poly" id="polyPane">
+          <h2>Poly Pen · 포크</h2>
+          <p class="sample" id="polySample"></p>
+        </section>
+      </div>
+      <div class="nav">
+        <a href="/">다운로드</a>
+        <a href="https://github.com/13ksh/poly-pen">GitHub</a>
+      </div>
+      <footer>
+        Poly Pen is a fork of Nanum Pen Script. SIL OFL 1.1.
+        예약 이름 Nanum, NanumPen은 쓰지 않습니다.
+      </footer>
+    </main>
+    <script>
+      const source = document.getElementById("source");
+      const size = document.getElementById("size");
+      const sizeLabel = document.getElementById("sizeLabel");
+      const nanumSample = document.getElementById("nanumSample");
+      const polySample = document.getElementById("polySample");
+      const nanumPane = document.getElementById("nanumPane");
+      const polyPane = document.getElementById("polyPane");
+      const empty = "글자를 입력하면 두 서체가 같이 바뀝니다.";
+
+      function render() {
+        const text = source.value;
+        const px = `${size.value}px`;
+        sizeLabel.textContent = px;
+        nanumSample.style.fontSize = px;
+        polySample.style.fontSize = px;
+        const blank = text.trim().length === 0;
+        nanumPane.classList.toggle("empty", blank);
+        polyPane.classList.toggle("empty", blank);
+        nanumSample.textContent = blank ? empty : text;
+        polySample.textContent = blank ? empty : text;
+      }
+
+      source.addEventListener("input", render);
+      size.addEventListener("input", render);
+      render();
+    </script>
+  </body>
+</html>

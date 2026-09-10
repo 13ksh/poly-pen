@@ -64,7 +64,8 @@ Writes `fonts/ttf/PolyPen-Regular.ttf`.
 python3 server.py
 ```
 
-http://127.0.0.1:48751
+- Download: http://127.0.0.1:48751
+- Compare Nanum Pen Script and Poly Pen: http://127.0.0.1:48751/compare
 
 ## Tests
 

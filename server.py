@@ -11,7 +11,9 @@ HOST = "0.0.0.0"
 PORT = 48751
 ROOT = Path(__file__).resolve().parent
 INDEX = ROOT / "index.html"
+COMPARE = ROOT / "compare.html"
 FONT = ROOT / "fonts" / "ttf" / "PolyPen-Regular.ttf"
+NANUM = ROOT / "fonts" / "nanum" / "NanumPenScript-Regular.ttf"
 OFL = ROOT / "OFL.txt"
 
 
@@ -37,6 +39,15 @@ class Handler(BaseHTTPRequestHandler):
         path = urlparse(self.path).path
         if path in ("/", "/index.html"):
             self._send(200, INDEX.read_bytes(), "text/html; charset=utf-8")
+            return
+        if path in ("/compare", "/compare.html"):
+            self._send(200, COMPARE.read_bytes(), "text/html; charset=utf-8")
+            return
+        if path == "/fonts/NanumPenScript-Regular.ttf":
+            if not NANUM.exists():
+                self._send(404, b"missing nanum", "text/plain; charset=utf-8")
+                return
+            self._send(200, NANUM.read_bytes(), "font/ttf")
             return
         if path in (
             "/fonts/poly-pen.ttf",
