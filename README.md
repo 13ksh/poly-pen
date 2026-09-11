@@ -59,7 +59,7 @@ python3 -m pip install -r requirements.txt
 bash sources/build.sh
 ```
 
-Writes `fonts/ttf/PolyPen-Regular.ttf`.
+Writes `fonts/ttf/PolyPen-Regular.ttf` and a Samsung Sans slot copy `fonts/samsung/Samsungsans.ttf`.
 
 ## Preview
 
@@ -67,7 +67,7 @@ Writes `fonts/ttf/PolyPen-Regular.ttf`.
 python3 server.py
 ```
 
-- Download: http://127.0.0.1:48751
+- Download (Samsung Sans slot): http://127.0.0.1:48751
 - Compare Nanum Pen Script and Poly Pen: http://127.0.0.1:48751/compare
 
 ## Tests

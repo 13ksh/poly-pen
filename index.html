@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Poly Pen</title>
+    <title>Poly Pen 다운로드 · Samsung Sans</title>
     <style>
       @font-face {
         font-family: "Poly Pen";
@@ -12,10 +12,11 @@
         font-display: swap;
       }
       :root {
-        --paper: #f4eee4;
+        --paper: #dceaf8;
+        --pane: #f4f8fd;
         --ink: #161412;
-        --mute: #6d675c;
-        --line: #ddd6c8;
+        --mute: #4d5a68;
+        --line: #c5d4e4;
       }
       * { box-sizing: border-box; }
       body {
@@ -25,9 +26,9 @@
         font-family: "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
       }
       main {
-        max-width: 920px;
+        max-width: 760px;
         margin: 0 auto;
-        padding: 36px 24px 72px;
+        padding: 28px 20px 80px;
       }
       .kicker {
         margin: 0 0 8px;
@@ -40,26 +41,42 @@
       h1 {
         margin: 0;
         font-family: "Poly Pen", sans-serif;
-        font-size: clamp(56px, 12vw, 108px);
+        font-size: clamp(52px, 12vw, 96px);
         font-weight: 400;
         line-height: 1;
       }
       .lede {
-        max-width: 38rem;
-        margin: 16px 0 0;
+        margin: 14px 0 0;
         color: var(--mute);
         line-height: 1.55;
         font-size: 15px;
+      }
+      .card {
+        margin: 24px 0 0;
+        padding: 20px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--pane);
+      }
+      .card h2 {
+        margin: 0 0 8px;
+        font-size: 16px;
+      }
+      .card p {
+        margin: 0;
+        color: var(--mute);
+        font-size: 14px;
+        line-height: 1.5;
       }
       .actions {
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
-        margin: 28px 0 8px;
+        margin: 16px 0 0;
       }
       .download, .ghost {
         display: inline-block;
-        padding: 12px 16px;
+        padding: 14px 18px;
         border-radius: 8px;
         text-decoration: none;
         font-size: 15px;
@@ -73,31 +90,38 @@
         color: var(--ink);
       }
       .meta {
+        margin: 12px 0 0;
         color: var(--mute);
         font-size: 13px;
-        line-height: 1.6;
+      }
+      ol {
+        margin: 12px 0 0;
+        padding-left: 1.2rem;
+        color: var(--mute);
+        font-size: 14px;
+        line-height: 1.55;
       }
       label {
         display: block;
-        margin: 36px 0 8px;
+        margin: 28px 0 8px;
         font-size: 12px;
         color: var(--mute);
       }
       textarea {
         width: 100%;
-        min-height: 140px;
+        min-height: 130px;
         padding: 16px 18px;
         border: 1px solid var(--line);
         border-radius: 10px;
-        background: #fffdf8;
+        background: #fff;
         color: var(--ink);
         font-family: "Poly Pen", sans-serif;
-        font-size: clamp(36px, 7vw, 64px);
+        font-size: clamp(32px, 7vw, 56px);
         line-height: 1.25;
         resize: vertical;
       }
       footer {
-        margin-top: 40px;
+        margin-top: 32px;
         color: var(--mute);
         font-size: 13px;
         line-height: 1.5;
@@ -106,27 +130,53 @@
   </head>
   <body>
     <main>
-      <p class="kicker">Nanum Pen Script fork</p>
+      <p class="kicker">Download</p>
       <h1>Poly Pen</h1>
       <p class="lede">
-        Poly Pen is a fork of Nanum Pen Script. 원본 손글씨 아웃라인을
-        삼각형으로 접은 뒤, 붙어 있는 면은 한 획으로 합쳤습니다.
-        원본에 있는 문자는 전부 들어 있습니다.
+        Nanum Pen Script 포크. 삼성 폰의 Samsung Sans 자리에 넣을 수 있게
+        <strong>Samsungsans.ttf</strong> 이름으로도 받아 갈 수 있습니다.
+        공식 삼성 폰트가 아닙니다.
       </p>
-      <div class="actions">
-        <a class="download" href="/download/PolyPen-Regular.ttf" download="PolyPen-Regular.ttf">TTF 다운로드</a>
-        <a class="ghost" href="/download/OFL.txt" download="OFL.txt">OFL 라이선스</a>
-        <a class="ghost" href="/compare">원본 비교</a>
-        <a class="ghost" href="https://github.com/13ksh/poly-pen">GitHub</a>
-      </div>
-      <p class="meta" id="meta">파일 확인 중…</p>
+
+      <section class="card">
+        <h2>Samsung Sans용</h2>
+        <p>
+          Galaxy Store Samsung Sans APK의
+          <code>assets/fonts/Samsungsans.ttf</code>와 같은 이름입니다.
+          그 파일을 이걸로 바꾸면 Samsung Sans 슬롯에 Poly Pen이 들어갑니다.
+        </p>
+        <div class="actions">
+          <a class="download" href="/download/Samsungsans.ttf" download="Samsungsans.ttf">Samsungsans.ttf 받기</a>
+          <a class="ghost" href="/download/PolyPen-SamsungSans.zip" download="PolyPen-SamsungSans.zip">ZIP (ttf + OFL + 설치)</a>
+        </div>
+        <p class="meta" id="samsungMeta">파일 확인 중…</p>
+        <ol>
+          <li>Galaxy Store에서 Samsung Sans 설치</li>
+          <li>여기의 Samsungsans.ttf 다운로드</li>
+          <li>APK의 assets/fonts/Samsungsans.ttf를 이 파일로 교체</li>
+          <li>서명 후 설치 → 설정에서 Samsung Sans 선택</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <h2>그냥 TTF</h2>
+        <p>가족 이름 Poly Pen 그대로인 파일입니다. PC, zFont, 다른 앱용.</p>
+        <div class="actions">
+          <a class="ghost" href="/download/PolyPen-Regular.ttf" download="PolyPen-Regular.ttf">PolyPen-Regular.ttf</a>
+          <a class="ghost" href="/download/OFL.txt" download="OFL.txt">OFL 라이선스</a>
+          <a class="ghost" href="/compare">원본 비교</a>
+        </div>
+        <p class="meta" id="meta">파일 확인 중…</p>
+      </section>
+
       <label for="sample">미리보기</label>
       <textarea id="sample" spellcheck="false">한글 가나다라
 Poly Pen 1234
-㈜ ㉠ !?@#</textarea>
+Samsung Sans</textarea>
       <footer>
         SIL OFL 1.1. Nanum Pen Script 포크.
-        원본 저작권 NHN / Sandoll. 예약 이름 Nanum, NanumPen은 쓰지 않습니다.
+        Samsung / Samsung Sans는 삼성 상표입니다. 이 파일은 그 슬롯에 넣는
+        Poly Pen 복사본입니다.
       </footer>
     </main>
     <script>
@@ -134,11 +184,16 @@ Poly Pen 1234
         .then((r) => r.json())
         .then((data) => {
           const mb = (data.bytes / 1024 / 1024).toFixed(1);
-          document.getElementById("meta").textContent =
-            `${data.filename} · ${mb}MB · Regular · ${data.glyphs.toLocaleString()}자`;
+          const line = `${data.filename} · ${mb}MB · Regular · ${data.glyphs.toLocaleString()}자`;
+          document.getElementById("meta").textContent = line;
+          const samsung = data.samsung || {};
+          const smb = samsung.bytes ? (samsung.bytes / 1024 / 1024).toFixed(1) : mb;
+          document.getElementById("samsungMeta").textContent =
+            `${samsung.filename || "Samsungsans.ttf"} · ${smb}MB · Samsung Sans 슬롯 이름`;
         })
         .catch(() => {
           document.getElementById("meta").textContent = "PolyPen-Regular.ttf";
+          document.getElementById("samsungMeta").textContent = "Samsungsans.ttf";
         });
     </script>
   </body>

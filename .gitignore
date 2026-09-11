@@ -5,3 +5,5 @@ cache/
 venv/
 .venv/
 env/
+downloads/
+fonts/samsung/Samsungsans.ttf

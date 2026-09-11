@@ -1,4 +1,4 @@
-"""Poly Pen download page."""
+"""Poly Pen download page. Samsung Sans drop-in TTF is served as Samsungsans.ttf."""
 
 from __future__ import annotations
 
@@ -14,7 +14,19 @@ INDEX = ROOT / "index.html"
 COMPARE = ROOT / "compare.html"
 FONT = ROOT / "fonts" / "ttf" / "PolyPen-Regular.ttf"
 NANUM = ROOT / "fonts" / "nanum" / "NanumPenScript-Regular.ttf"
+SAMSUNG = ROOT / "fonts" / "samsung" / "Samsungsans.ttf"
+SAMSUNG_ZIP = ROOT / "downloads" / "PolyPen-SamsungSans.zip"
 OFL = ROOT / "OFL.txt"
+
+
+def _ensure_samsung() -> None:
+    if FONT.exists() and (not SAMSUNG.exists() or not SAMSUNG_ZIP.exists()):
+        import sys
+
+        sys.path.insert(0, str(ROOT / "sources"))
+        from make_samsung import main as make_samsung
+
+        make_samsung()
 
 
 def _font_bytes() -> int:
@@ -62,15 +74,41 @@ class Handler(BaseHTTPRequestHandler):
             download = "PolyPen-Regular.ttf" if path.startswith("/download/") else None
             self._send(200, data, "font/ttf", download)
             return
+        if path in (
+            "/fonts/Samsungsans.ttf",
+            "/download/Samsungsans.ttf",
+            "/download/SamsungSans.ttf",
+        ):
+            _ensure_samsung()
+            if not SAMSUNG.exists():
+                self._send(404, b"missing samsung slot font", "text/plain; charset=utf-8")
+                return
+            data = SAMSUNG.read_bytes()
+            download = "Samsungsans.ttf" if path.startswith("/download/") else None
+            self._send(200, data, "font/ttf", download)
+            return
+        if path == "/download/PolyPen-SamsungSans.zip":
+            _ensure_samsung()
+            if not SAMSUNG_ZIP.exists():
+                self._send(404, b"missing zip", "text/plain; charset=utf-8")
+                return
+            self._send(200, SAMSUNG_ZIP.read_bytes(), "application/zip", "PolyPen-SamsungSans.zip")
+            return
         if path == "/download/OFL.txt":
             self._send(200, OFL.read_bytes(), "text/plain; charset=utf-8", "OFL.txt")
             return
         if path == "/meta":
+            _ensure_samsung()
             payload = {
                 "family": "Poly Pen",
                 "filename": "PolyPen-Regular.ttf",
                 "bytes": _font_bytes(),
                 "glyphs": 11743,
+                "samsung": {
+                    "filename": "Samsungsans.ttf",
+                    "bytes": SAMSUNG.stat().st_size if SAMSUNG.exists() else 0,
+                    "zip": "PolyPen-SamsungSans.zip",
+                },
             }
             self._send(200, json.dumps(payload).encode("utf-8"), "application/json; charset=utf-8")
             return
@@ -78,6 +116,7 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main() -> None:
+    _ensure_samsung()
     httpd = ThreadingHTTPServer((HOST, PORT), Handler)
     print(f"Poly Pen download  http://127.0.0.1:{PORT}", flush=True)
     httpd.serve_forever()

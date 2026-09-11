@@ -63,6 +63,17 @@ def test_pipeline_scripts_live_in_sources() -> None:
     assert "glyph.py" in readme
     assert "lowpoly.py" in readme
     assert "build_font.py" in readme
+    assert (folder / "make_samsung.py").is_file()
+
+
+def test_samsung_sans_slot_copy() -> None:
+    from make_samsung import SLOT, main
+
+    path = main()
+    assert path == SLOT
+    assert path.name == "Samsungsans.ttf"
+    src = ROOT / "fonts" / "ttf" / "PolyPen-Regular.ttf"
+    assert path.read_bytes() == src.read_bytes()
 
 
 if __name__ == "__main__":
@@ -72,4 +83,5 @@ if __name__ == "__main__":
     test_svg_contains_paths()
     test_ofl_says_nanum_fork()
     test_pipeline_scripts_live_in_sources()
+    test_samsung_sans_slot_copy()
     print("ok")
