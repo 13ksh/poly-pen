@@ -167,14 +167,17 @@ def font_polys(
     geom, advance = glyph_geometry(char)
     if geom is None or geom.is_empty:
         return [], advance
-    if expand > 0:
+    if expand != 0:
         try:
-            fat = geom.buffer(expand)
-            if fat is not None and not fat.is_empty:
-                geom = make_valid(fat)
+            shifted = geom.buffer(expand)
+            if shifted is not None and not shifted.is_empty:
+                geom = make_valid(shifted)
         except Exception:
             pass
-        advance = float(advance) + expand * 1.8
+        if expand > 0:
+            advance = float(advance) + expand * 1.8
+        else:
+            advance = max(40.0, float(advance) + expand * 1.2)
     tris = triangulate(geom, simplify, max_seg)
     if not tris:
         return [], advance

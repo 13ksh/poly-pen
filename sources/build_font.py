@@ -8,6 +8,7 @@ import os
 import shutil
 import sys
 import time
+import zipfile
 from pathlib import Path
 
 from fontTools.fontBuilder import FontBuilder
@@ -19,6 +20,7 @@ from shapely.geometry.polygon import LinearRing
 
 from glyph import UPM, cmap, glyph_geometry, source_font
 from lowpoly import font_polys
+from styles import STYLES
 
 ROOT = Path(__file__).resolve().parent.parent
 DESKTOP = Path.home() / "Desktop"
@@ -29,22 +31,7 @@ REPO_URL = "https://github.com/13ksh/poly-pen"
 SIMPLIFY = 0.8
 INSET = 0.0
 _EXPAND = 0.0
-STYLES: dict[str, dict] = {
-    "Regular": {
-        "weight": 400,
-        "expand": 0.0,
-        "macStyle": 0,
-        "fsSelection": 0x00C0,
-        "filename": "PolyPen-Regular.ttf",
-    },
-    "Bold": {
-        "weight": 700,
-        "expand": 22.0,
-        "macStyle": 1,
-        "fsSelection": 0x00A0,
-        "filename": "PolyPen-Bold.ttf",
-    },
-}
+ZIP_NAME = "PolyPen-100-900.zip"
 
 
 def glyph_name(code: int) -> str:
@@ -250,8 +237,8 @@ def assemble_font(
                 "Outlines are faceted into triangles, then touching faces are merged. "
                 "Coverage matches the source font. The family name is Poly Pen. "
                 "It does not use the reserved names Nanum or NanumPen. "
-                "Regular 400 and Bold 700 are shipped so apps that request bold "
-                "(Discord, YouTube) do not fall back to another family."
+                "Styles run Thin 100 through Black 900 so apps that request "
+                "medium or bold (Discord, YouTube) stay in this family."
             ),
             "vendorURL": REPO_URL,
             "designerURL": REPO_URL,
@@ -411,20 +398,66 @@ def build(
     return dest
 
 
+def zip_family() -> Path:
+    dest = ROOT / "downloads" / ZIP_NAME
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    ofl = ROOT / "OFL.txt"
+    paths = []
+    for spec in STYLES.values():
+        path = ROOT / "fonts" / "ttf" / str(spec["filename"])
+        if not path.exists():
+            raise FileNotFoundError(f"Missing {path}")
+        paths.append(path)
+    with zipfile.ZipFile(dest, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=6) as archive:
+        for path in paths:
+            archive.write(path, arcname=path.name)
+        if ofl.exists():
+            archive.write(ofl, arcname="OFL.txt")
+    copies = [dest]
+    for extra in (DESKTOP / ZIP_NAME, DOWNLOADS / ZIP_NAME, ARTIFACTS / ZIP_NAME):
+        try:
+            extra.parent.mkdir(parents=True, exist_ok=True)
+            if extra.resolve() == dest.resolve():
+                continue
+            shutil.copy2(dest, extra)
+            copies.append(extra)
+        except OSError as exc:
+            print(f"skip {extra}: {exc}", flush=True)
+    print(f"wrote {dest} ({dest.stat().st_size} bytes)", flush=True)
+    for path in copies[1:]:
+        print(f"copy {path}", flush=True)
+    return dest
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Build Poly Pen (Nanum Pen Script fork)")
     parser.add_argument("--limit", type=int, default=0)
     parser.add_argument("--workers", type=int, default=0)
     parser.add_argument("--out", type=Path, default=None)
     parser.add_argument("--style", choices=tuple(STYLES), default="Regular")
-    parser.add_argument("--family", action="store_true", help="Build Regular and Bold")
+    parser.add_argument("--family", action="store_true", help="Build Thin 100 through Black 900")
+    parser.add_argument("--force", action="store_true", help="Rebuild styles that already exist")
+    parser.add_argument("--zip-only", action="store_true", help="Zip existing Thin–Black TTFs")
     args = parser.parse_args()
+    if args.zip_only:
+        zip_family()
+        return
     codes = collect_codepoints()
     if args.limit:
         codes = codes[: args.limit]
     styles = list(STYLES) if args.family else [args.style]
     for style in styles:
-        build(codes=codes, workers=args.workers or None, dest=args.out if len(styles) == 1 else None, style=style)
+        dest = args.out if len(styles) == 1 else None
+        existing = ROOT / "fonts" / "ttf" / str(STYLES[style]["filename"])
+        if dest is None and existing.exists() and args.family and not args.force:
+            print(f"skip existing {existing}", flush=True)
+            continue
+        build(codes=codes, workers=args.workers or None, dest=dest, style=style)
+    if args.family or args.style:
+        try:
+            zip_family()
+        except FileNotFoundError as exc:
+            print(f"skip zip: {exc}", flush=True)
 
 
 if __name__ == "__main__":

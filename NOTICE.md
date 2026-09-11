@@ -9,7 +9,7 @@ Nanum or NanumPen.
 
 Coverage matches the source font: Korean Hangul (11,172 syllables)
 plus the rest of the Nanum Pen Script character map.
-Styles: Regular 400 and Bold 700.
+Styles: Thin 100 through Black 900.
 
 ## Nanum Pen Script (SIL Open Font License 1.1)
 

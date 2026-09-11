@@ -55,6 +55,7 @@ def test_pipeline_scripts_live_in_sources() -> None:
         "lowpoly.py",
         "glyph_coverage.py",
         "render.py",
+        "styles.py",
         "config.yaml",
         "README.md",
     ):
@@ -81,6 +82,9 @@ def test_bold_outlines_are_thicker() -> None:
     digit_thin, _ = font_polys("8", expand=0.0)
     digit_fat, _ = font_polys("8", expand=22.0)
     assert sum(poly.area for poly in digit_fat) > sum(poly.area for poly in digit_thin)
+    hair, _ = font_polys("한", expand=-8.0)
+    a_thin = sum(poly.area for poly in hair)
+    assert 0 < a_thin < a0
 
 
 def test_samsung_sans_slot_copy() -> None:
@@ -117,6 +121,10 @@ def test_android_fix_keeps_bold_names() -> None:
 
     assert detect_style(ROOT / "fonts" / "ttf" / "PolyPen-Bold.ttf") == "Bold"
     assert detect_style(ROOT / "fonts" / "ttf" / "PolyPen-Regular.ttf") == "Regular"
+    assert detect_style(ROOT / "fonts" / "ttf" / "PolyPen-ExtraBold.ttf") == "ExtraBold"
+    assert detect_style(ROOT / "fonts" / "ttf" / "PolyPen-ExtraLight.ttf") == "ExtraLight"
+    assert STYLES["Thin"]["weight"] == 100
+    assert STYLES["Black"]["weight"] == 900
     assert STYLES["Bold"]["weight"] == 700
     assert STYLES["Regular"]["weight"] == 400
 

@@ -1,7 +1,7 @@
 """Make Poly Pen tables match what Android / Samsung loaders expect.
 
 Does not impersonate Monotype or Samsung as the vendor.
-Preserves Regular vs Bold from the filename (or an explicit style).
+Preserves Thin–Black from the filename (or an explicit style).
 """
 
 from __future__ import annotations
@@ -10,47 +10,12 @@ from pathlib import Path
 
 from fontTools.ttLib import TTFont, newTable
 
+from styles import STYLES, detect_style
+
 ROOT = Path(__file__).resolve().parent.parent
 FONT = ROOT / "fonts" / "ttf" / "PolyPen-Regular.ttf"
 # Latin 1252 + Korean 949, same bits Nanum Pen Script uses.
 CODEPAGE_LATIN_KR = 524289
-
-STYLES = {
-    "Regular": {
-        "weight": 400,
-        "macStyle": 0,
-        "fsSelection": 0x00C0,
-        "styleName": "Regular",
-        "psName": "PolyPen-Regular",
-        "fullName": "Poly Pen Regular",
-        "unique": "1.000;PPEN;PolyPen-Regular",
-        "panoseWeight": 5,
-    },
-    "Bold": {
-        "weight": 700,
-        "macStyle": 1,
-        "fsSelection": 0x00A0,
-        "styleName": "Bold",
-        "psName": "PolyPen-Bold",
-        "fullName": "Poly Pen Bold",
-        "unique": "1.000;PPEN;PolyPen-Bold",
-        "panoseWeight": 8,
-    },
-}
-
-
-def detect_style(path: Path, font: TTFont | None = None) -> str:
-    name = path.name.lower()
-    if "bold" in name:
-        return "Bold"
-    if font is not None:
-        weight = int(getattr(font["OS/2"], "usWeightClass", 400) or 400)
-        if weight >= 600:
-            return "Bold"
-        style = font["name"].getDebugName(2) or ""
-        if style.lower() == "bold":
-            return "Bold"
-    return "Regular"
 
 
 def fix_font(path: Path = FONT, style: str | None = None) -> Path:
@@ -79,14 +44,15 @@ def fix_font(path: Path = FONT, style: str | None = None) -> Path:
         pass
 
     nam = font["name"]
+    ps_name = f"PolyPen-{style}"
     english = {
         0: nam.getDebugName(0) or "",
         1: "Poly Pen",
-        2: spec["styleName"],
-        3: spec["unique"],
-        4: spec["fullName"],
+        2: style,
+        3: f"1.000;PPEN;{ps_name}",
+        4: f"Poly Pen {style}",
         5: "Version 1.000",
-        6: spec["psName"],
+        6: ps_name,
         8: "The Poly Pen Project Authors",
         9: "The Poly Pen Project Authors",
         11: "https://github.com/13ksh/poly-pen",
@@ -94,7 +60,7 @@ def fix_font(path: Path = FONT, style: str | None = None) -> Path:
         13: nam.getDebugName(13) or "",
         14: "https://openfontlicense.org",
         16: "Poly Pen",
-        17: spec["styleName"],
+        17: style,
     }
     keep = [r for r in nam.names if r.nameID not in english]
     nam.names = keep

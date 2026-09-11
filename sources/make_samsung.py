@@ -81,11 +81,20 @@ def main() -> Path:
             zf.write(BOLD_SRC, "PolyPen-Bold.ttf")
         zf.write(OFL, "OFL.txt")
         zf.write(ZFONT_HOWTO, "zfont-oneui8.txt")
+    from build_font import zip_family
+
+    try:
+        family_zip = zip_family()
+    except FileNotFoundError as exc:
+        family_zip = None
+        print(f"skip family zip: {exc}")
     print(f"wrote {SLOT} ({SLOT.stat().st_size} bytes)")
     if BOLD_SLOT.exists():
         print(f"wrote {BOLD_SLOT} ({BOLD_SLOT.stat().st_size} bytes)")
     print(f"wrote {ZIP_PATH} ({ZIP_PATH.stat().st_size} bytes)")
     print(f"wrote {ZFONT_ZIP} ({ZFONT_ZIP.stat().st_size} bytes)")
+    if family_zip is not None:
+        print(f"wrote {family_zip} ({family_zip.stat().st_size} bytes)")
     return SLOT
 
 
