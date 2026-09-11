@@ -19,7 +19,8 @@ one part.
 The family name is "Poly Pen". It does not use the reserved names
 Nanum or NanumPen.
 
-Style: Regular 400 only.
+Styles: Regular 400 and Bold 700. Bold is a stroke expansion of the
+same faceted outlines so apps that request weight 700 keep this family.
 
 Coverage matches Nanum Pen Script, including the full Hangul syllable
 block and the rest of the source cmap.
@@ -40,6 +41,7 @@ ChangeLog
 ----------------------------------------------------------------------
 
 11 September 2026 (The Poly Pen Project Authors)
+- Add Bold 700 (expanded outlines, same facet/merge pipeline)
 - Keep the facet/build scripts in sources/ (build_font.py, glyph.py,
   lowpoly.py)
 

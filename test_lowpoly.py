@@ -66,6 +66,23 @@ def test_pipeline_scripts_live_in_sources() -> None:
     assert (folder / "make_samsung.py").is_file()
 
 
+def test_bold_outlines_are_thicker() -> None:
+    from lowpoly import font_polys
+
+    thin, _ = font_polys("한", expand=0.0)
+    fat, _ = font_polys("한", expand=22.0)
+    a0 = sum(poly.area for poly in thin)
+    a1 = sum(poly.area for poly in fat)
+    assert a0 > 0
+    assert a1 > a0 * 1.15
+    latin_thin, _ = font_polys("B", expand=0.0)
+    latin_fat, _ = font_polys("B", expand=22.0)
+    assert sum(poly.area for poly in latin_fat) > sum(poly.area for poly in latin_thin)
+    digit_thin, _ = font_polys("8", expand=0.0)
+    digit_fat, _ = font_polys("8", expand=22.0)
+    assert sum(poly.area for poly in digit_fat) > sum(poly.area for poly in digit_thin)
+
+
 def test_samsung_sans_slot_copy() -> None:
     from make_samsung import SLOT, main as make_samsung
 
@@ -79,7 +96,29 @@ def test_samsung_sans_slot_copy() -> None:
     font = TTFont(str(src))
     assert font["name"].getDebugName(3).startswith("1.000;PPEN;")
     assert font["OS/2"].version >= 4
+    assert font["OS/2"].usWeightClass == 400
     font.close()
+    bold = ROOT / "fonts" / "ttf" / "PolyPen-Bold.ttf"
+    if bold.exists():
+        from make_samsung import BOLD_SLOT
+
+        assert BOLD_SLOT.exists()
+        assert BOLD_SLOT.read_bytes() == bold.read_bytes()
+        bfont = TTFont(str(bold))
+        assert bfont["OS/2"].usWeightClass == 700
+        assert bfont["name"].getDebugName(2) == "Bold"
+        assert bfont["name"].getDebugName(6) == "PolyPen-Bold"
+        assert bfont["head"].macStyle & 1
+        bfont.close()
+
+
+def test_android_fix_keeps_bold_names() -> None:
+    from fix_android import STYLES, detect_style
+
+    assert detect_style(ROOT / "fonts" / "ttf" / "PolyPen-Bold.ttf") == "Bold"
+    assert detect_style(ROOT / "fonts" / "ttf" / "PolyPen-Regular.ttf") == "Regular"
+    assert STYLES["Bold"]["weight"] == 700
+    assert STYLES["Regular"]["weight"] == 400
 
 
 if __name__ == "__main__":
@@ -89,5 +128,7 @@ if __name__ == "__main__":
     test_svg_contains_paths()
     test_ofl_says_nanum_fork()
     test_pipeline_scripts_live_in_sources()
+    test_bold_outlines_are_thicker()
     test_samsung_sans_slot_copy()
+    test_android_fix_keeps_bold_names()
     print("ok")

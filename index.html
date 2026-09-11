@@ -11,6 +11,12 @@
         font-weight: 400;
         font-display: swap;
       }
+      @font-face {
+        font-family: "Poly Pen";
+        src: url("/fonts/PolyPen-Bold.ttf") format("truetype");
+        font-weight: 700;
+        font-display: swap;
+      }
       :root {
         --paper: #dceaf8;
         --pane: #f4f8fd;
@@ -101,6 +107,27 @@
         font-size: 14px;
         line-height: 1.55;
       }
+      .weights {
+        display: grid;
+        gap: 12px;
+        margin: 14px 0 0;
+      }
+      .weights p {
+        margin: 0;
+        font-family: "Poly Pen", sans-serif;
+        font-size: clamp(28px, 6vw, 40px);
+        line-height: 1.3;
+        color: var(--ink);
+        font-synthesis: none;
+      }
+      .weights .w400 { font-weight: 400; }
+      .weights .w700 { font-weight: 700; }
+      .weights .caption {
+        font-family: "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+        font-size: 12px;
+        color: var(--mute);
+        letter-spacing: 0.04em;
+      }
       label {
         display: block;
         margin: 28px 0 8px;
@@ -133,28 +160,43 @@
       <p class="kicker">zFont · One UI 8</p>
       <h1>Poly Pen</h1>
       <p class="lede">
-        Nanum Pen Script 포크. zFont 3 · One UI 8용 TTF입니다.
-        삼성에서 “지원하지 않는 글꼴 / 공급업체에 문의”가 뜨면
-        <strong>이 페이지에서 파일을 다시</strong> 받으세요. 이름표를 삼성 로더 형식에 맞춰 고쳤습니다.
+        Nanum Pen Script 포크. Regular 400과 Bold 700을 같이 넣었습니다.
+        Discord·YouTube에서 한글·영어·숫자가 가끔 기본 폰트로 보이던 건
+        글자가 빠져서가 아니라, 앱이 굵은 글씨를 찾을 때 Bold가 없어서
+        다른 서체로 넘어간 겁니다.
       </p>
+
+      <section class="card">
+        <h2>굵게 / 보통</h2>
+        <p>
+          왼쪽 줄은 Regular, 아래 줄은 Bold입니다. 같은 글자가 두께만 다릅니다.
+        </p>
+        <div class="weights">
+          <p class="caption">Regular 400</p>
+          <p class="w400">가나다 abc 123  Discord 본문</p>
+          <p class="caption">Bold 700</p>
+          <p class="w700">가나다 abc 123  Discord 이름 · YouTube 제목</p>
+        </div>
+      </section>
 
       <section class="card">
         <h2>zFont 3 · One UI 8</h2>
         <p>
-          Play 스토어의 zFont 3에 이 TTF를 넣은 뒤,
+          Play 스토어의 zFont 3에 Regular와 Bold TTF를 같이 넣은 뒤,
           적용 화면에서 <strong>One UI 8</strong>을 고르면 됩니다.
           패키지 만들 때 zFile 설치를 물어보면 같이 설치합니다.
         </p>
         <div class="actions">
-          <a class="download" href="/download/PolyPen-Regular.ttf" download="PolyPen-Regular.ttf">zFont용 TTF 받기</a>
-          <a class="ghost" href="/download/PolyPen-zFont-OneUI8.zip" download="PolyPen-zFont-OneUI8.zip">ZIP (ttf + 설치)</a>
+          <a class="download" href="/download/PolyPen-Regular.ttf" download="PolyPen-Regular.ttf">Regular TTF</a>
+          <a class="download" href="/download/PolyPen-Bold.ttf" download="PolyPen-Bold.ttf">Bold TTF</a>
+          <a class="ghost" href="/download/PolyPen-zFont-OneUI8.zip" download="PolyPen-zFont-OneUI8.zip">ZIP (두 두께 + 설치)</a>
           <a class="ghost" href="https://play.google.com/store/apps/details?id=com.htetznaing.zfont2">zFont 3 (Play)</a>
         </div>
         <p class="meta" id="meta">파일 확인 중…</p>
         <ol>
           <li>zFont 3 설치</li>
-          <li>여기의 PolyPen-Regular.ttf 다운로드</li>
-          <li>zFont → Downloads에서 이 ttf 선택 → 체크</li>
+          <li>여기의 PolyPen-Regular.ttf와 PolyPen-Bold.ttf 다운로드</li>
+          <li>zFont → Downloads에서 Regular 선택, Bold도 같이 넣기</li>
           <li><strong>One UI 8</strong> 선택 → Create</li>
           <li>zFile 설치 요청이 나오면 설치한 뒤 다시 Create</li>
           <li>Install Package → 설정 → 디스플레이 → Font size and style에서 Poly Pen</li>
@@ -169,6 +211,7 @@
         </p>
         <div class="actions">
           <a class="ghost" href="/download/Samsungsans.ttf" download="Samsungsans.ttf">Samsungsans.ttf</a>
+          <a class="ghost" href="/download/Samsungsans-Bold.ttf" download="Samsungsans-Bold.ttf">Samsungsans-Bold.ttf</a>
           <a class="ghost" href="/download/OFL.txt" download="OFL.txt">OFL</a>
           <a class="ghost" href="/compare">원본 비교</a>
         </div>
@@ -189,16 +232,19 @@ zFont One UI 8</textarea>
       fetch("/meta")
         .then((r) => r.json())
         .then((data) => {
-          const mb = (data.bytes / 1024 / 1024).toFixed(1);
-          const line = `${data.filename} · ${mb}MB · Regular · ${data.glyphs.toLocaleString()}자`;
+          const mb = (n) => (n / 1024 / 1024).toFixed(1);
+          const bold = (data.weights && data.weights.bold) || {};
+          const line = bold.bytes
+            ? `Regular ${mb(data.bytes)}MB · Bold ${mb(bold.bytes)}MB · ${data.glyphs.toLocaleString()}자`
+            : `${data.filename} · ${mb(data.bytes)}MB · Regular · ${data.glyphs.toLocaleString()}자`;
           document.getElementById("meta").textContent = line;
           const samsung = data.samsung || {};
-          const smb = samsung.bytes ? (samsung.bytes / 1024 / 1024).toFixed(1) : mb;
+          const smb = samsung.bytes ? mb(samsung.bytes) : mb(data.bytes);
           document.getElementById("samsungMeta").textContent =
-            `${samsung.filename || "Samsungsans.ttf"} · ${smb}MB · Samsung Sans 슬롯 이름`;
+            `${samsung.filename || "Samsungsans.ttf"} · ${smb}MB · Regular/Bold 슬롯`;
         })
         .catch(() => {
-          document.getElementById("meta").textContent = "PolyPen-Regular.ttf";
+          document.getElementById("meta").textContent = "PolyPen-Regular.ttf / PolyPen-Bold.ttf";
           document.getElementById("samsungMeta").textContent = "Samsungsans.ttf";
         });
     </script>

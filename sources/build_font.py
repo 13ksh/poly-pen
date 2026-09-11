@@ -24,13 +24,27 @@ ROOT = Path(__file__).resolve().parent.parent
 DESKTOP = Path.home() / "Desktop"
 DOWNLOADS = Path.home() / "Downloads"
 ARTIFACTS = Path("/opt/cursor/artifacts")
-FONT_NAME = "PolyPen-Regular.ttf"
 FAMILY = "Poly Pen"
-STYLE = "Regular"
-PS_NAME = "PolyPen-Regular"
 REPO_URL = "https://github.com/13ksh/poly-pen"
 SIMPLIFY = 0.8
 INSET = 0.0
+_EXPAND = 0.0
+STYLES: dict[str, dict] = {
+    "Regular": {
+        "weight": 400,
+        "expand": 0.0,
+        "macStyle": 0,
+        "fsSelection": 0x00C0,
+        "filename": "PolyPen-Regular.ttf",
+    },
+    "Bold": {
+        "weight": 700,
+        "expand": 22.0,
+        "macStyle": 1,
+        "fsSelection": 0x00A0,
+        "filename": "PolyPen-Bold.ttf",
+    },
+}
 
 
 def glyph_name(code: int) -> str:
@@ -118,14 +132,16 @@ def _reset_font_caches() -> None:
     glyph_geometry.cache_clear()
 
 
-def _pool_init() -> None:
+def _pool_init(expand: float = 0.0) -> None:
+    global _EXPAND
+    _EXPAND = expand
     _reset_font_caches()
     cmap()
 
 
 def _worker(code: int) -> tuple[int, float, list[list[tuple[int, int]]]]:
     try:
-        polys, advance = font_polys(chr(code), inset=INSET)
+        polys, advance = font_polys(chr(code), inset=INSET, expand=_EXPAND)
     except Exception:
         return code, 0.0, []
     return code, float(advance), contours_from_polys(polys)
@@ -163,7 +179,15 @@ def source_metrics() -> dict:
     }
 
 
-def assemble_font(rows: list[tuple[int, float, list[list[tuple[int, int]]]]], dest: Path) -> None:
+def assemble_font(
+    rows: list[tuple[int, float, list[list[tuple[int, int]]]]],
+    dest: Path,
+    *,
+    style: str = "Regular",
+) -> None:
+    spec = STYLES[style]
+    ps_name = f"PolyPen-{style}"
+    weight = int(spec["weight"])
     metrics = source_metrics()
     cmap_out: dict[int, str] = {}
     glyphs: dict = {}
@@ -194,7 +218,7 @@ def assemble_font(rows: list[tuple[int, float, list[list[tuple[int, int]]]]], de
 
     fb = FontBuilder(int(UPM), isTTF=True)
     now = timestampNow()
-    fb.setupHead(fontRevision=1.0, lowestRecPPEM=8, created=now, modified=now, macStyle=0)
+    fb.setupHead(fontRevision=1.0, lowestRecPPEM=8, created=now, modified=now, macStyle=int(spec["macStyle"]))
     fb.setupGlyphOrder(order)
     fb.setupCharacterMap(cmap_out, allowFallback=True)
     fb.setupGlyf(glyphs)
@@ -214,10 +238,10 @@ def assemble_font(rows: list[tuple[int, float, list[list[tuple[int, int]]]]], de
                 "Original copyright NHN Corporation / Sandoll Communications Inc."
             ),
             "familyName": FAMILY,
-            "styleName": STYLE,
-            "uniqueFontIdentifier": "1.000;PPEN;PolyPen-Regular",
-            "fullName": f"{FAMILY} {STYLE}",
-            "psName": PS_NAME,
+            "styleName": style,
+            "uniqueFontIdentifier": f"1.000;PPEN;{ps_name}",
+            "fullName": f"{FAMILY} {style}",
+            "psName": ps_name,
             "version": "Version 1.000",
             "manufacturer": "The Poly Pen Project Authors",
             "designer": "The Poly Pen Project Authors",
@@ -225,7 +249,9 @@ def assemble_font(rows: list[tuple[int, float, list[list[tuple[int, int]]]]], de
                 "Poly Pen is a fork of Nanum Pen Script (a Modified Version under OFL 1.1). "
                 "Outlines are faceted into triangles, then touching faces are merged. "
                 "Coverage matches the source font. The family name is Poly Pen. "
-                "It does not use the reserved names Nanum or NanumPen."
+                "It does not use the reserved names Nanum or NanumPen. "
+                "Regular 400 and Bold 700 are shipped so apps that request bold "
+                "(Discord, YouTube) do not fall back to another family."
             ),
             "vendorURL": REPO_URL,
             "designerURL": REPO_URL,
@@ -235,7 +261,7 @@ def assemble_font(rows: list[tuple[int, float, list[list[tuple[int, int]]]]], de
             ),
             "licenseInfoURL": "https://openfontlicense.org",
             "typographicFamily": FAMILY,
-            "typographicSubfamily": STYLE,
+            "typographicSubfamily": style,
             "sampleText": "가나다라 abcd 1234",
         }
     )
@@ -245,9 +271,9 @@ def assemble_font(rows: list[tuple[int, float, list[list[tuple[int, int]]]]], de
         sTypoLineGap=metrics["typoLineGap"],
         usWinAscent=metrics["winAscent"],
         usWinDescent=metrics["winDescent"],
-        usWeightClass=400,
+        usWeightClass=weight,
         usWidthClass=5,
-        fsSelection=0x00C0,
+        fsSelection=int(spec["fsSelection"]),
         achVendID="PPEN",
         sCapHeight=metrics["sCapHeight"],
         sxHeight=metrics["sxHeight"],
@@ -275,7 +301,8 @@ def assemble_font(rows: list[tuple[int, float, list[list[tuple[int, int]]]]], de
     fb.save(dest)
 
 
-def sanitize_font(path: Path) -> Path:
+def sanitize_font(path: Path, *, style: str = "Regular") -> Path:
+    spec = STYLES[style]
     font = TTFont(path, recalcBBoxes=False, recalcTimestamp=True)
     if "ltag" in font:
         del font["ltag"]
@@ -292,8 +319,8 @@ def sanitize_font(path: Path) -> Path:
     os2.yStrikeoutSize = metrics["yStrikeoutSize"]
     os2.yStrikeoutPosition = metrics["yStrikeoutPosition"]
     os2.panose = metrics["panose"]
-    os2.usWeightClass = 400
-    os2.fsSelection = 0x00C0
+    os2.usWeightClass = int(spec["weight"])
+    os2.fsSelection = int(spec["fsSelection"])
     os2.achVendID = "PPEN"
     os2.fsType = 0
     os2.version = 4
@@ -318,7 +345,7 @@ def sanitize_font(path: Path) -> Path:
     dsig.signatureRecords = []
     font["DSIG"] = dsig
     font["head"].lowestRecPPEM = 8
-    font["head"].macStyle = 0
+    font["head"].macStyle = int(spec["macStyle"])
     font["head"].modified = timestampNow()
     font.save(path)
     return path
@@ -326,7 +353,8 @@ def sanitize_font(path: Path) -> Path:
 
 def copy_outputs(master: Path) -> list[Path]:
     written = [master]
-    for dest in (DESKTOP / FONT_NAME, DOWNLOADS / FONT_NAME, ARTIFACTS / FONT_NAME):
+    name = master.name
+    for dest in (DESKTOP / name, DOWNLOADS / name, ARTIFACTS / name):
         try:
             dest.parent.mkdir(parents=True, exist_ok=True)
             if dest.resolve() == master.resolve():
@@ -338,15 +366,24 @@ def copy_outputs(master: Path) -> list[Path]:
     return written
 
 
-def build(codes: list[int] | None = None, workers: int | None = None, dest: Path | None = None) -> Path:
-    dest = dest or (ROOT / "fonts" / "ttf" / FONT_NAME)
+def build(
+    codes: list[int] | None = None,
+    workers: int | None = None,
+    dest: Path | None = None,
+    *,
+    style: str = "Regular",
+) -> Path:
+    global _EXPAND
+    spec = STYLES[style]
+    dest = dest or (ROOT / "fonts" / "ttf" / str(spec["filename"]))
     dest.parent.mkdir(parents=True, exist_ok=True)
     codes = list(codes) if codes is not None else collect_codepoints()
+    _EXPAND = float(spec["expand"])
     _reset_font_caches()
     workers = max(1, workers or (os.cpu_count() or 2))
     started = time.time()
     rows: list[tuple[int, float, list[list[tuple[int, int]]]]] = []
-    print(f"faceting {len(codes)} glyphs with {workers} workers", flush=True)
+    print(f"faceting {style} {len(codes)} glyphs expand={_EXPAND} workers={workers}", flush=True)
     if workers == 1 or len(codes) < 8:
         for i, code in enumerate(codes, start=1):
             rows.append(_worker(code))
@@ -354,18 +391,18 @@ def build(codes: list[int] | None = None, workers: int | None = None, dest: Path
                 print(f"facet {i}/{len(codes)}", flush=True)
     else:
         ctx = mp.get_context("fork")
-        with ctx.Pool(processes=workers, initializer=_pool_init) as pool:
+        with ctx.Pool(processes=workers, initializer=_pool_init, initargs=(_EXPAND,)) as pool:
             for i, row in enumerate(pool.imap(_worker, codes, chunksize=16), start=1):
                 rows.append(row)
                 if i == 1 or i % 500 == 0 or i == len(codes):
                     print(f"facet {i}/{len(codes)}", flush=True)
     empty = sum(1 for _, _, contours in rows if not contours)
-    print(f"compiling TrueType ({empty} empty outlines)", flush=True)
-    assemble_font(rows, dest)
-    sanitize_font(dest)
+    print(f"compiling TrueType {style} ({empty} empty outlines)", flush=True)
+    assemble_font(rows, dest, style=style)
+    sanitize_font(dest, style=style)
     from fix_android import fix_font
 
-    fix_font(dest)
+    fix_font(dest, style=style)
     copies = copy_outputs(dest)
     elapsed = round(time.time() - started, 1)
     print(f"wrote {dest} ({dest.stat().st_size} bytes) in {elapsed}s", flush=True)
@@ -375,15 +412,19 @@ def build(codes: list[int] | None = None, workers: int | None = None, dest: Path
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Build PolyPen-Regular.ttf (Nanum Pen Script fork)")
+    parser = argparse.ArgumentParser(description="Build Poly Pen (Nanum Pen Script fork)")
     parser.add_argument("--limit", type=int, default=0)
     parser.add_argument("--workers", type=int, default=0)
     parser.add_argument("--out", type=Path, default=None)
+    parser.add_argument("--style", choices=tuple(STYLES), default="Regular")
+    parser.add_argument("--family", action="store_true", help="Build Regular and Bold")
     args = parser.parse_args()
     codes = collect_codepoints()
     if args.limit:
         codes = codes[: args.limit]
-    build(codes=codes, workers=args.workers or None, dest=args.out)
+    styles = list(STYLES) if args.family else [args.style]
+    for style in styles:
+        build(codes=codes, workers=args.workers or None, dest=args.out if len(styles) == 1 else None, style=style)
 
 
 if __name__ == "__main__":

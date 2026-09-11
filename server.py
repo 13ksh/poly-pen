@@ -13,8 +13,10 @@ ROOT = Path(__file__).resolve().parent
 INDEX = ROOT / "index.html"
 COMPARE = ROOT / "compare.html"
 FONT = ROOT / "fonts" / "ttf" / "PolyPen-Regular.ttf"
+BOLD = ROOT / "fonts" / "ttf" / "PolyPen-Bold.ttf"
 NANUM = ROOT / "fonts" / "nanum" / "NanumPenScript-Regular.ttf"
 SAMSUNG = ROOT / "fonts" / "samsung" / "Samsungsans.ttf"
+SAMSUNG_BOLD = ROOT / "fonts" / "samsung" / "Samsungsans-Bold.ttf"
 SAMSUNG_ZIP = ROOT / "downloads" / "PolyPen-SamsungSans.zip"
 ZFONT_ZIP = ROOT / "downloads" / "PolyPen-zFont-OneUI8.zip"
 OFL = ROOT / "OFL.txt"
@@ -22,7 +24,10 @@ OFL = ROOT / "OFL.txt"
 
 def _ensure_samsung() -> None:
     if FONT.exists() and (
-        not SAMSUNG.exists() or not SAMSUNG_ZIP.exists() or not ZFONT_ZIP.exists()
+        not SAMSUNG.exists()
+        or not SAMSUNG_ZIP.exists()
+        or not ZFONT_ZIP.exists()
+        or (BOLD.exists() and not SAMSUNG_BOLD.exists())
     ):
         import sys
 
@@ -32,8 +37,8 @@ def _ensure_samsung() -> None:
         make_samsung()
 
 
-def _font_bytes() -> int:
-    return FONT.stat().st_size if FONT.exists() else 0
+def _font_bytes(path: Path) -> int:
+    return path.stat().st_size if path.exists() else 0
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -78,6 +83,17 @@ class Handler(BaseHTTPRequestHandler):
             self._send(200, data, "font/ttf", download)
             return
         if path in (
+            "/fonts/PolyPen-Bold.ttf",
+            "/download/PolyPen-Bold.ttf",
+        ):
+            if not BOLD.exists():
+                self._send(404, b"missing bold", "text/plain; charset=utf-8")
+                return
+            data = BOLD.read_bytes()
+            download = "PolyPen-Bold.ttf" if path.startswith("/download/") else None
+            self._send(200, data, "font/ttf", download)
+            return
+        if path in (
             "/fonts/Samsungsans.ttf",
             "/download/Samsungsans.ttf",
             "/download/SamsungSans.ttf",
@@ -88,6 +104,18 @@ class Handler(BaseHTTPRequestHandler):
                 return
             data = SAMSUNG.read_bytes()
             download = "Samsungsans.ttf" if path.startswith("/download/") else None
+            self._send(200, data, "font/ttf", download)
+            return
+        if path in (
+            "/fonts/Samsungsans-Bold.ttf",
+            "/download/Samsungsans-Bold.ttf",
+        ):
+            _ensure_samsung()
+            if not SAMSUNG_BOLD.exists():
+                self._send(404, b"missing samsung bold slot font", "text/plain; charset=utf-8")
+                return
+            data = SAMSUNG_BOLD.read_bytes()
+            download = "Samsungsans-Bold.ttf" if path.startswith("/download/") else None
             self._send(200, data, "font/ttf", download)
             return
         if path == "/download/PolyPen-zFont-OneUI8.zip":
@@ -112,15 +140,29 @@ class Handler(BaseHTTPRequestHandler):
             payload = {
                 "family": "Poly Pen",
                 "filename": "PolyPen-Regular.ttf",
-                "bytes": _font_bytes(),
+                "bytes": _font_bytes(FONT),
                 "glyphs": 11743,
+                "weights": {
+                    "regular": {
+                        "filename": "PolyPen-Regular.ttf",
+                        "bytes": _font_bytes(FONT),
+                        "weight": 400,
+                    },
+                    "bold": {
+                        "filename": "PolyPen-Bold.ttf",
+                        "bytes": _font_bytes(BOLD),
+                        "weight": 700,
+                    },
+                },
                 "samsung": {
                     "filename": "Samsungsans.ttf",
-                    "bytes": SAMSUNG.stat().st_size if SAMSUNG.exists() else 0,
+                    "bytes": _font_bytes(SAMSUNG),
+                    "bold": "Samsungsans-Bold.ttf",
                     "zip": "PolyPen-SamsungSans.zip",
                 },
                 "zfont": {
                     "filename": "PolyPen-Regular.ttf",
+                    "bold": "PolyPen-Bold.ttf",
                     "zip": "PolyPen-zFont-OneUI8.zip",
                     "oneui": "8",
                 },

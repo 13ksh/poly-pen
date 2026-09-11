@@ -156,11 +156,25 @@ def facet_glyph(
     return tuple(faces), advance
 
 
-def font_polys(char: str, simplify: float = 28.0, max_seg: float = 96.0, inset: float = 0.0) -> tuple[list[Polygon], float]:
+def font_polys(
+    char: str,
+    simplify: float = 28.0,
+    max_seg: float = 96.0,
+    inset: float = 0.0,
+    expand: float = 0.0,
+) -> tuple[list[Polygon], float]:
     """Low-poly silhouette for TrueType. Touching triangles become one outline."""
     geom, advance = glyph_geometry(char)
     if geom is None or geom.is_empty:
         return [], advance
+    if expand > 0:
+        try:
+            fat = geom.buffer(expand)
+            if fat is not None and not fat.is_empty:
+                geom = make_valid(fat)
+        except Exception:
+            pass
+        advance = float(advance) + expand * 1.8
     tris = triangulate(geom, simplify, max_seg)
     if not tris:
         return [], advance

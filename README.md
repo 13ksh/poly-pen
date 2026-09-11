@@ -8,7 +8,7 @@
 
 ## About
 
-Each glyph is faceted into triangles. Faces that touch are merged into one outline so a connected stroke stays one part. Coverage matches the source font (full Hangul plus the rest of the Nanum Pen Script cmap). Style: Regular 400.
+Each glyph is faceted into triangles. Faces that touch are merged into one outline so a connected stroke stays one part. Coverage matches the source font (full Hangul plus the rest of the Nanum Pen Script cmap). Styles: Regular 400 and Bold 700. Apps that request bold (Discord, YouTube) stay in this family instead of falling back to a default face.
 
 Upstream source (unmodified OFL Nanum Pen Script) lives in `fonts/nanum/`. Built fonts live in `fonts/ttf/`.
 
@@ -42,7 +42,7 @@ documentation/
   poly-pen-specimen.png
 fonts/
   nanum/         # unmodified Nanum Pen Script (the upstream of this fork)
-  ttf/           # PolyPen-Regular.ttf
+  ttf/           # PolyPen-Regular.ttf, PolyPen-Bold.ttf
 sources/
   build.sh
   build_font.py
@@ -59,7 +59,7 @@ python3 -m pip install -r requirements.txt
 bash sources/build.sh
 ```
 
-Writes `fonts/ttf/PolyPen-Regular.ttf` and a Samsung Sans slot copy `fonts/samsung/Samsungsans.ttf`.
+Writes `fonts/ttf/PolyPen-Regular.ttf`, `fonts/ttf/PolyPen-Bold.ttf`, and Samsung Sans slot copies `fonts/samsung/Samsungsans.ttf` / `Samsungsans-Bold.ttf`.
 
 ## Preview
 

@@ -17,6 +17,12 @@
         font-weight: 400;
         font-display: swap;
       }
+      @font-face {
+        font-family: "Poly Pen";
+        src: url("/fonts/PolyPen-Bold.ttf") format("truetype");
+        font-weight: 700;
+        font-display: swap;
+      }
       :root {
         --paper: #dceaf8;
         --pane: #f4f8fd;
@@ -127,7 +133,24 @@
         color: #8a97a6;
       }
       .nanum .sample { font-family: "Nanum Pen Script", cursive; }
-      .poly .sample { font-family: "Poly Pen", cursive; }
+      .poly .sample { font-family: "Poly Pen", cursive; font-synthesis: none; }
+      .weight-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .weight-row button {
+        padding: 8px 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        color: var(--ink);
+        cursor: pointer;
+      }
+      .weight-row button[aria-pressed="true"] {
+        background: var(--ink);
+        color: var(--paper);
+      }
       .nav {
         display: flex;
         flex-wrap: wrap;
@@ -156,7 +179,7 @@
       <h1>Nanum Pen Script / Poly Pen</h1>
       <p class="lede">
         왼쪽이 원본 Nanum Pen Script, 오른쪽이 포크 Poly Pen입니다.
-        같은 글자를 두 서체로 같이 봅니다.
+        Poly Pen은 Regular와 Bold를 바꿔 볼 수 있습니다.
       </p>
       <div class="controls">
         <div>
@@ -172,6 +195,13 @@
             <span class="size-val" id="sizeLabel">64px</span>
           </div>
         </div>
+        <div>
+          <label>Poly Pen 두께</label>
+          <div class="weight-row">
+            <button type="button" id="weight400" aria-pressed="true">Regular 400</button>
+            <button type="button" id="weight700" aria-pressed="false">Bold 700</button>
+          </div>
+        </div>
       </div>
       <div class="grid">
         <section class="pane nanum" id="nanumPane">
@@ -179,7 +209,7 @@
           <p class="sample" id="nanumSample"></p>
         </section>
         <section class="pane poly" id="polyPane">
-          <h2>Poly Pen · 포크</h2>
+          <h2 id="polyLabel">Poly Pen · Regular</h2>
           <p class="sample" id="polySample"></p>
         </section>
       </div>
@@ -200,7 +230,19 @@
       const polySample = document.getElementById("polySample");
       const nanumPane = document.getElementById("nanumPane");
       const polyPane = document.getElementById("polyPane");
+      const polyLabel = document.getElementById("polyLabel");
+      const weight400 = document.getElementById("weight400");
+      const weight700 = document.getElementById("weight700");
       const empty = "글자를 입력하면 두 서체가 같이 바뀝니다.";
+      let polyWeight = 400;
+
+      function setWeight(weight) {
+        polyWeight = weight;
+        weight400.setAttribute("aria-pressed", weight === 400 ? "true" : "false");
+        weight700.setAttribute("aria-pressed", weight === 700 ? "true" : "false");
+        polySample.style.fontWeight = String(weight);
+        polyLabel.textContent = weight === 700 ? "Poly Pen · Bold" : "Poly Pen · Regular";
+      }
 
       function render() {
         const text = source.value;
@@ -208,6 +250,7 @@
         sizeLabel.textContent = px;
         nanumSample.style.fontSize = px;
         polySample.style.fontSize = px;
+        polySample.style.fontWeight = String(polyWeight);
         const blank = text.trim().length === 0;
         nanumPane.classList.toggle("empty", blank);
         polyPane.classList.toggle("empty", blank);
@@ -217,6 +260,15 @@
 
       source.addEventListener("input", render);
       size.addEventListener("input", render);
+      weight400.addEventListener("click", () => {
+        setWeight(400);
+        render();
+      });
+      weight700.addEventListener("click", () => {
+        setWeight(700);
+        render();
+      });
+      setWeight(400);
       render();
     </script>
   </body>

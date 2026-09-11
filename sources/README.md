@@ -8,7 +8,7 @@ The starting outlines are the unmodified Nanum Pen Script TTF in
 
 - `glyph.py` — load Nanum Pen Script outlines
 - `lowpoly.py` — facet and merge triangles
-- `build_font.py` — compile PolyPen-Regular.ttf
+- `build_font.py` — compile PolyPen-Regular.ttf and PolyPen-Bold.ttf
 - `glyph_coverage.py` — coverage helpers
 - `render.py` — SVG preview of facets
 - `config.yaml` — family recipe
