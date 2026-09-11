@@ -8,3 +8,6 @@ env/
 downloads/
 fonts/samsung/Samsungsans.ttf
 fonts/samsung/Samsungsans-Bold.ttf
+server.py
+index.html
+compare.html

@@ -61,15 +61,6 @@ bash sources/build.sh
 
 Writes `fonts/ttf/PolyPen-Regular.ttf`, `fonts/ttf/PolyPen-Bold.ttf`, and Samsung Sans slot copies `fonts/samsung/Samsungsans.ttf` / `Samsungsans-Bold.ttf`.
 
-## Preview
-
-```bash
-python3 server.py
-```
-
-- Download (zFont One UI 8): http://127.0.0.1:48751
-- Compare Nanum Pen Script and Poly Pen: http://127.0.0.1:48751/compare
-
 ## Tests
 
 ```bash
