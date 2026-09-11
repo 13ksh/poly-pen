@@ -1,0 +1,14 @@
+Poly Pen → zFont 3 · One UI 8
+==============================
+
+1. Play 스토어에서 zFont 3 설치
+   https://play.google.com/store/apps/details?id=com.htetznaing.zfont2
+2. PolyPen-Regular.ttf 를 폰에 받습니다.
+3. zFont 3 → Downloads에서 이 ttf 선택 → 체크
+4. One UI 8 선택 → Create
+5. zFile 설치를 물어보면 설치한 뒤 다시 Create
+6. Install Package
+7. 설정 → 디스플레이 → Font size and style 에서 적용
+
+OpenType 가족 이름은 Poly Pen입니다. SIL OFL 1.1.
+One UI 8.5 / 최신 보안 패치에서는 막힐 수 있습니다.

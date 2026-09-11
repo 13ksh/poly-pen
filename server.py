@@ -16,11 +16,14 @@ FONT = ROOT / "fonts" / "ttf" / "PolyPen-Regular.ttf"
 NANUM = ROOT / "fonts" / "nanum" / "NanumPenScript-Regular.ttf"
 SAMSUNG = ROOT / "fonts" / "samsung" / "Samsungsans.ttf"
 SAMSUNG_ZIP = ROOT / "downloads" / "PolyPen-SamsungSans.zip"
+ZFONT_ZIP = ROOT / "downloads" / "PolyPen-zFont-OneUI8.zip"
 OFL = ROOT / "OFL.txt"
 
 
 def _ensure_samsung() -> None:
-    if FONT.exists() and (not SAMSUNG.exists() or not SAMSUNG_ZIP.exists()):
+    if FONT.exists() and (
+        not SAMSUNG.exists() or not SAMSUNG_ZIP.exists() or not ZFONT_ZIP.exists()
+    ):
         import sys
 
         sys.path.insert(0, str(ROOT / "sources"))
@@ -87,6 +90,13 @@ class Handler(BaseHTTPRequestHandler):
             download = "Samsungsans.ttf" if path.startswith("/download/") else None
             self._send(200, data, "font/ttf", download)
             return
+        if path == "/download/PolyPen-zFont-OneUI8.zip":
+            _ensure_samsung()
+            if not ZFONT_ZIP.exists():
+                self._send(404, b"missing zip", "text/plain; charset=utf-8")
+                return
+            self._send(200, ZFONT_ZIP.read_bytes(), "application/zip", "PolyPen-zFont-OneUI8.zip")
+            return
         if path == "/download/PolyPen-SamsungSans.zip":
             _ensure_samsung()
             if not SAMSUNG_ZIP.exists():
@@ -108,6 +118,11 @@ class Handler(BaseHTTPRequestHandler):
                     "filename": "Samsungsans.ttf",
                     "bytes": SAMSUNG.stat().st_size if SAMSUNG.exists() else 0,
                     "zip": "PolyPen-SamsungSans.zip",
+                },
+                "zfont": {
+                    "filename": "PolyPen-Regular.ttf",
+                    "zip": "PolyPen-zFont-OneUI8.zip",
+                    "oneui": "8",
                 },
             }
             self._send(200, json.dumps(payload).encode("utf-8"), "application/json; charset=utf-8")

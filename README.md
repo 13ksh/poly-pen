@@ -67,7 +67,7 @@ Writes `fonts/ttf/PolyPen-Regular.ttf` and a Samsung Sans slot copy `fonts/samsu
 python3 server.py
 ```
 
-- Download (Samsung Sans slot): http://127.0.0.1:48751
+- Download (zFont One UI 8): http://127.0.0.1:48751
 - Compare Nanum Pen Script and Poly Pen: http://127.0.0.1:48751/compare
 
 ## Tests
