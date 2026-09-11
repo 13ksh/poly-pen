@@ -10,16 +10,9 @@ outputDir: ../fonts/ttf
 sources:
   - ../fonts/nanum/NanumPenScript-Regular.ttf
 weights:
-  - { value: 100, style: Thin, expand: -8 }
-  - { value: 200, style: ExtraLight, expand: -5 }
-  - { value: 300, style: Light, expand: -2.5 }
   - { value: 400, style: Regular, expand: 0 }
-  - { value: 500, style: Medium, expand: 8 }
-  - { value: 600, style: SemiBold, expand: 15 }
   - { value: 700, style: Bold, expand: 22 }
-  - { value: 800, style: ExtraBold, expand: 28 }
-  - { value: 900, style: Black, expand: 34 }
 notes: >
   Fork / Modified Version of Nanum Pen Script (OFL 1.1).
   Family name is Poly Pen. Does not use the reserved names Nanum or NanumPen.
-  Coverage matches the source font. Thin 100 through Black 900.
+  Coverage matches the source font. Regular 400 and Bold 700.

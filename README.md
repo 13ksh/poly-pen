@@ -8,7 +8,7 @@
 
 ## About
 
-Each glyph is faceted into triangles. Faces that touch are merged into one outline so a connected stroke stays one part. Coverage matches the source font (full Hangul plus the rest of the Nanum Pen Script cmap). Styles: Thin 100 through Black 900.
+Each glyph is faceted into triangles. Faces that touch are merged into one outline so a connected stroke stays one part. Coverage matches the source font (full Hangul plus the rest of the Nanum Pen Script cmap). Styles: Regular 400 and Bold 700.
 
 Upstream source (unmodified OFL Nanum Pen Script) lives in `fonts/nanum/`. Built fonts live in `fonts/ttf/`.
 
@@ -42,7 +42,7 @@ documentation/
   poly-pen-specimen.png
 fonts/
   nanum/         # unmodified Nanum Pen Script (the upstream of this fork)
-  ttf/           # PolyPen-Thin.ttf … PolyPen-Black.ttf
+  ttf/           # PolyPen-Regular.ttf, PolyPen-Bold.ttf
 sources/
   build.sh
   build_font.py
@@ -59,7 +59,7 @@ python3 -m pip install -r requirements.txt
 bash sources/build.sh
 ```
 
-Writes `fonts/ttf/PolyPen-Thin.ttf` through `PolyPen-Black.ttf` and `downloads/PolyPen-100-900.zip`.
+Writes `fonts/ttf/PolyPen-Regular.ttf` and `fonts/ttf/PolyPen-Bold.ttf`.
 
 ## Tests
 

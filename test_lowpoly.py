@@ -64,7 +64,6 @@ def test_pipeline_scripts_live_in_sources() -> None:
     assert "glyph.py" in readme
     assert "lowpoly.py" in readme
     assert "build_font.py" in readme
-    assert (folder / "make_samsung.py").is_file()
 
 
 def test_bold_outlines_are_thicker() -> None:
@@ -85,35 +84,6 @@ def test_bold_outlines_are_thicker() -> None:
     hair, _ = font_polys("한", expand=-8.0)
     a_thin = sum(poly.area for poly in hair)
     assert 0 < a_thin < a0
-
-
-def test_samsung_sans_slot_copy() -> None:
-    from make_samsung import SLOT, main as make_samsung
-
-    path = make_samsung()
-    assert path == SLOT
-    assert path.name == "Samsungsans.ttf"
-    src = ROOT / "fonts" / "ttf" / "PolyPen-Regular.ttf"
-    assert path.read_bytes() == src.read_bytes()
-    from fontTools.ttLib import TTFont
-
-    font = TTFont(str(src))
-    assert font["name"].getDebugName(3).startswith("1.000;PPEN;")
-    assert font["OS/2"].version >= 4
-    assert font["OS/2"].usWeightClass == 400
-    font.close()
-    bold = ROOT / "fonts" / "ttf" / "PolyPen-Bold.ttf"
-    if bold.exists():
-        from make_samsung import BOLD_SLOT
-
-        assert BOLD_SLOT.exists()
-        assert BOLD_SLOT.read_bytes() == bold.read_bytes()
-        bfont = TTFont(str(bold))
-        assert bfont["OS/2"].usWeightClass == 700
-        assert bfont["name"].getDebugName(2) == "Bold"
-        assert bfont["name"].getDebugName(6) == "PolyPen-Bold"
-        assert bfont["head"].macStyle & 1
-        bfont.close()
 
 
 def test_android_fix_keeps_bold_names() -> None:
@@ -137,6 +107,5 @@ if __name__ == "__main__":
     test_ofl_says_nanum_fork()
     test_pipeline_scripts_live_in_sources()
     test_bold_outlines_are_thicker()
-    test_samsung_sans_slot_copy()
     test_android_fix_keeps_bold_names()
     print("ok")

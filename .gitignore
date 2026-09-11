@@ -6,8 +6,15 @@ venv/
 .venv/
 env/
 downloads/
-fonts/samsung/Samsungsans.ttf
-fonts/samsung/Samsungsans-Bold.ttf
+fonts/samsung/
+fonts/ttf/PolyPen-Thin.ttf
+fonts/ttf/PolyPen-ExtraLight.ttf
+fonts/ttf/PolyPen-Light.ttf
+fonts/ttf/PolyPen-Medium.ttf
+fonts/ttf/PolyPen-SemiBold.ttf
+fonts/ttf/PolyPen-ExtraBold.ttf
+fonts/ttf/PolyPen-Black.ttf
+sources/make_samsung.py
 server.py
 index.html
 compare.html

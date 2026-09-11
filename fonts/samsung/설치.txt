@@ -1,9 +1,0 @@
-Poly Pen → Samsung Sans 자리에 넣기
-================================
-
-이 파일은 삼성 공식 폰트가 아닙니다.
-Poly Pen(Nanum Pen Script 포크)을 Samsung Sans APK가 찾는
-파일 이름(Samsungsans.ttf / Samsungsans-Bold.ttf)으로 저장한 것입니다.
-
-zFont 3 + One UI 8을 쓰면 이 방법은 필요 없습니다.
-PolyPen-Regular.ttf와 PolyPen-Bold.ttf를 zFont Downloads에서 고르면 됩니다.
