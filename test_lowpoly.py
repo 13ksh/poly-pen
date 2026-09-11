@@ -1,10 +1,12 @@
+import sys
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+sys.path.insert(0, str(ROOT / "sources"))
 
 from glyph import FONT_PATH, glyph_geometry, has_char
 from lowpoly import STYLES, facet_glyph_styled
 from render import render_line_svg
-
-ROOT = Path(__file__).resolve().parent
 
 
 def test_source_is_nanum() -> None:
@@ -44,10 +46,30 @@ def test_ofl_says_nanum_fork() -> None:
     assert "https://github.com/13ksh/poly-pen" in text
 
 
+def test_pipeline_scripts_live_in_sources() -> None:
+    folder = ROOT / "sources"
+    for name in (
+        "build.sh",
+        "build_font.py",
+        "glyph.py",
+        "lowpoly.py",
+        "glyph_coverage.py",
+        "render.py",
+        "config.yaml",
+        "README.md",
+    ):
+        assert (folder / name).is_file(), name
+    readme = (folder / "README.md").read_text(encoding="utf-8")
+    assert "glyph.py" in readme
+    assert "lowpoly.py" in readme
+    assert "build_font.py" in readme
+
+
 if __name__ == "__main__":
     test_source_is_nanum()
     test_full_hangul_slot()
     test_facets_cover_glyph()
     test_svg_contains_paths()
     test_ofl_says_nanum_fork()
+    test_pipeline_scripts_live_in_sources()
     print("ok")

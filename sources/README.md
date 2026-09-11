@@ -2,6 +2,18 @@
 
 Poly Pen is a **fork of Nanum Pen Script**.
 
-- Unmodified upstream TTF: `../fonts/nanum/NanumPenScript-Regular.ttf`
-- Facet + merge pipeline: `../glyph.py`, `../lowpoly.py`, `../build_font.py`
-- One-command build: `./build.sh`
+This folder is the font source. There are no UFO or Glyphs masters.
+The starting outlines are the unmodified Nanum Pen Script TTF in
+`../fonts/nanum/`. The Modified Version is built here:
+
+- `glyph.py` — load Nanum Pen Script outlines
+- `lowpoly.py` — facet and merge triangles
+- `build_font.py` — compile PolyPen-Regular.ttf
+- `glyph_coverage.py` — coverage helpers
+- `render.py` — SVG preview of facets
+- `config.yaml` — family recipe
+- `build.sh` — one-command build
+
+```bash
+./build.sh
+```

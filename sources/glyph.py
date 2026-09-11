@@ -11,7 +11,7 @@ from shapely.geometry import GeometryCollection, MultiPolygon, Polygon
 from shapely.geometry.base import BaseGeometry
 from shapely.validation import make_valid
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 FONT_PATH = ROOT / "fonts" / "nanum" / "NanumPenScript-Regular.ttf"
 UPM = 1000.0
 

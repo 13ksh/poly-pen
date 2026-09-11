@@ -20,7 +20,7 @@ from shapely.geometry.polygon import LinearRing
 from glyph import UPM, cmap, glyph_geometry, source_font
 from lowpoly import font_polys
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 DESKTOP = Path.home() / "Desktop"
 DOWNLOADS = Path.home() / "Downloads"
 ARTIFACTS = Path("/opt/cursor/artifacts")

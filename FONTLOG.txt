@@ -39,6 +39,10 @@ https://github.com/13ksh/poly-pen
 ChangeLog
 ----------------------------------------------------------------------
 
+11 September 2026 (The Poly Pen Project Authors)
+- Keep the facet/build scripts in sources/ (build_font.py, glyph.py,
+  lowpoly.py)
+
 10 September 2026 (The Poly Pen Project Authors)
 - Initial release of Poly Pen as a fork / Modified Version of
   Nanum Pen Script

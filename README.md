@@ -45,6 +45,9 @@ fonts/
   ttf/           # PolyPen-Regular.ttf
 sources/
   build.sh
+  build_font.py
+  glyph.py
+  lowpoly.py
   config.yaml
 requirements.txt
 ```

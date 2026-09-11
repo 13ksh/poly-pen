@@ -5,7 +5,7 @@ familyName: Poly Pen
 buildVariable: false
 recipe:
   tool: python
-  script: ../build_font.py
+  script: build_font.py
 outputDir: ../fonts/ttf
 sources:
   - ../fonts/nanum/NanumPenScript-Regular.ttf
