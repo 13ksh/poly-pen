@@ -51,6 +51,9 @@ One UI 8.5 / 최신 보안 패치에서는 막힐 수 있습니다.
 def main() -> Path:
     if not SRC.exists():
         raise FileNotFoundError(f"Missing {SRC}")
+    from fix_android import fix_font
+
+    fix_font(SRC)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     shutil.copy2(SRC, SLOT)
     HOWTO.write_text(HOWTO_TEXT, encoding="utf-8")

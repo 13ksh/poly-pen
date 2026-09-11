@@ -67,13 +67,19 @@ def test_pipeline_scripts_live_in_sources() -> None:
 
 
 def test_samsung_sans_slot_copy() -> None:
-    from make_samsung import SLOT, main
+    from make_samsung import SLOT, main as make_samsung
 
-    path = main()
+    path = make_samsung()
     assert path == SLOT
     assert path.name == "Samsungsans.ttf"
     src = ROOT / "fonts" / "ttf" / "PolyPen-Regular.ttf"
     assert path.read_bytes() == src.read_bytes()
+    from fontTools.ttLib import TTFont
+
+    font = TTFont(str(src))
+    assert font["name"].getDebugName(3).startswith("1.000;PPEN;")
+    assert font["OS/2"].version >= 4
+    font.close()
 
 
 if __name__ == "__main__":

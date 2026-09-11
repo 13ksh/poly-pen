@@ -215,7 +215,7 @@ def assemble_font(rows: list[tuple[int, float, list[list[tuple[int, int]]]]], de
             ),
             "familyName": FAMILY,
             "styleName": STYLE,
-            "uniqueFontIdentifier": "Poly Pen Regular; fork of Nanum Pen Script",
+            "uniqueFontIdentifier": "1.000;PPEN;PolyPen-Regular",
             "fullName": f"{FAMILY} {STYLE}",
             "psName": PS_NAME,
             "version": "Version 1.000",
@@ -247,7 +247,7 @@ def assemble_font(rows: list[tuple[int, float, list[list[tuple[int, int]]]]], de
         usWinDescent=metrics["winDescent"],
         usWeightClass=400,
         usWidthClass=5,
-        fsSelection=0x0040,
+        fsSelection=0x00C0,
         achVendID="PPEN",
         sCapHeight=metrics["sCapHeight"],
         sxHeight=metrics["sxHeight"],
@@ -293,10 +293,14 @@ def sanitize_font(path: Path) -> Path:
     os2.yStrikeoutPosition = metrics["yStrikeoutPosition"]
     os2.panose = metrics["panose"]
     os2.usWeightClass = 400
-    os2.fsSelection = 0x0040
+    os2.fsSelection = 0x00C0
     os2.achVendID = "PPEN"
     os2.fsType = 0
+    os2.version = 4
+    os2.usMaxContext = 1
     os2.recalcCodePageRanges(font)
+    os2.ulCodePageRange1 |= 1
+    os2.ulCodePageRange1 |= 1 << 19
     os2.updateFirstAndLastCharIndex(font)
     post = font["post"]
     post.formatType = 3.0
@@ -359,6 +363,9 @@ def build(codes: list[int] | None = None, workers: int | None = None, dest: Path
     print(f"compiling TrueType ({empty} empty outlines)", flush=True)
     assemble_font(rows, dest)
     sanitize_font(dest)
+    from fix_android import fix_font
+
+    fix_font(dest)
     copies = copy_outputs(dest)
     elapsed = round(time.time() - started, 1)
     print(f"wrote {dest} ({dest.stat().st_size} bytes) in {elapsed}s", flush=True)
